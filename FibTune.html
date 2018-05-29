@@ -1,0 +1,105 @@
+<html>
+   <head>
+      <title>FibTune</title>
+   </head>
+   <body>
+      <h1>FibTune</h1>
+
+      <p>This program creates a tune using the
+      <a href="http://www.flutetree.com/playing/fibonacci.html" target="_blank">Fibonacci Technique</a>
+      and renders it in NAFTracks Six Hole Font (if installed), in Flutetree.com Songbook
+      notation, and in ABC music notation. The NAFTracks fonts can be downloaded from
+      <a href="http://www.clintgoss.com/flutopedia.com/fonts.htm">http://www.clintgoss.com/flutopedia.com/fonts.htm</a>.</p>
+
+      <form name="fibForm" onSubmit="javascript:createBtnOnClick(); return false;">
+         <table>
+            <tr>
+               <td><b>Title:</b></td>
+               <td><input type="text" name="title" size="40"/></td>
+            </tr>
+            <tr>
+               <td><b>Words:</b></td>
+               <td><input type="text" name="words" size="80"/></td>
+            </tr>
+         </table>
+
+         <br>
+         <input type="button" name="createBtn" value="Create" onClick="javascript:createBtnOnClick();"/>
+      </form>
+
+      <hr>
+
+      <p><b>NAFTracks Six Hole Font:</b></p>
+      <div id="nafTracksTxt">(none)</div>
+
+      <p><b>Flutetree Songbook:</b></p>
+      <div id="flutetreeTxt">(none)</div>
+
+      <p><b>ABC:</b></p>
+      <div id="abcTxt">(none)</div>
+
+      <script type="text/javascript">
+         function createBtnOnClick(fibForm) {
+            var fibMap = {
+               "I":"1", "J":"1", "U":"1", "V":"1", "Y":"1",
+               "H":"3", "L":"3", "N":"3", "R":"3", "X":"3",
+               "A":"4", "E":"4", "O":"4", "Q":"4",
+               "B":"5", "C":"5", "F":"5", "G":"5", "S":"5", "Z":"5",
+               "D":"7", "K":"7", "M":"7", "P":"7", "T":"7", "W":"7"
+            }
+
+            var nafNoteMap = { "1":"F#", "3":"A", "4":"B", "5":"c#", "7":"e" }
+            var abcNoteMap = { "1":"F", "3":"A", "4":"B", "5":"c", "7":"e" }
+
+            var chars = document.fibForm.words.value.toUpperCase();
+            /* style="font-family:'NAFTracks Six Hole'; font-size:48" */
+            var nafTracks = "<font face='NAFTracks Six Hole' size='36'>";
+            var flutetree = "<p>[L:1/4][W:5]<br>";
+            var abc = "<p>X:1<br>T:" + document.fibForm.title.value + "<br>M:1/4<br>L:1/4<br>K:C#m<br>";
+            var count = 0;
+            var barCount = 1;
+
+            for (var i = 0; i < chars.length; i ++) {
+               var c = chars.charAt(i);
+
+               if (fibMap[c]) {
+                  count ++;
+
+                  if (count > 1) {
+                     nafTracks += "&nbsp;";
+                     flutetree += " ";
+                     abc += " ";
+
+                     if ((count % 4) == 1) {
+                        barCount ++;
+
+                        if ((barCount % 6) == 0) {
+                           nafTracks += "<br><br>";
+                           flutetree += "|<br>";
+                           abc += "|<br>";
+                        } else {
+                           nafTracks += "- ";
+                           flutetree += "| ";
+                           abc += "| ";
+                        }
+                     }
+                  }
+
+                  var n = fibMap[c];
+                  nafTracks += n;
+                  flutetree += nafNoteMap[n];
+                  abc += abcNoteMap[n];
+               }
+            }
+
+            nafTracks += "</font>";
+            flutetree += " |]</p>";
+            abc += " |]</p>";
+
+            document.getElementById("nafTracksTxt").innerHTML = nafTracks;
+            document.getElementById("flutetreeTxt").innerHTML = flutetree;
+            document.getElementById("abcTxt").innerHTML = abc;
+         }
+      </script>
+   </body>
+</html>
